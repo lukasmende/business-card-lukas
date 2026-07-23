@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Code2,
   Camera,
@@ -19,9 +20,12 @@ import {
   Sun,
   Moon,
   ExternalLink,
+  Send,
 } from 'lucide-react';
 import profileImg from './assets/hero.png';
 import { useTheme } from './useTheme';
+
+const CONTACT_EMAIL = 'lukas@mendesevic.de';
 
 interface SocialLink {
   name: string;
@@ -140,6 +144,14 @@ const timeline: TimelineItem[] = [
 
 export default function App() {
   const [theme, setTheme] = useTheme();
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+
+  function handleContactSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const subject = encodeURIComponent(`Portfolio contact from ${contactForm.name}`);
+    const body = encodeURIComponent(`${contactForm.message}\n\n— ${contactForm.name} (${contactForm.email})`);
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 antialiased transition-colors duration-300">
@@ -404,6 +416,79 @@ export default function App() {
               <span className="text-xs text-neutral-500 dark:text-neutral-400 mt-2">Today</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="bg-white dark:bg-neutral-950">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-20 md:py-28">
+          <div className="text-center mb-14">
+            <p className="text-sm font-semibold text-[#0071e3] dark:text-[#2997ff] tracking-wide uppercase mb-3">
+              Get in Touch
+            </p>
+            <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-neutral-900 dark:text-white">
+              Contact
+            </h2>
+            <p className="text-base text-neutral-500 dark:text-neutral-400 mt-4 max-w-md mx-auto">
+              Have a project in mind or just want to say hi? Send a message and it'll open right up in your mail app.
+            </p>
+          </div>
+
+          <form onSubmit={handleContactSubmit} className="max-w-xl mx-auto flex flex-col gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-name" className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  Name
+                </label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  required
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                  className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 px-4 py-3 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#2997ff] transition-shadow duration-200"
+                  placeholder="Your name"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="contact-email" className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  Email
+                </label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  required
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                  className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 px-4 py-3 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#2997ff] transition-shadow duration-200"
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="contact-message" className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                Message
+              </label>
+              <textarea
+                id="contact-message"
+                required
+                rows={5}
+                value={contactForm.message}
+                onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 px-4 py-3 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#0071e3] dark:focus:ring-[#2997ff] transition-shadow duration-200 resize-none"
+                placeholder="What's on your mind?"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="self-center inline-flex items-center gap-2 px-6 py-3 rounded-full bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-colors duration-200"
+            >
+              Send message
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
         </div>
       </section>
 
